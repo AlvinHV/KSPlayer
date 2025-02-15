@@ -136,14 +136,20 @@ public class KSMEPlayer: NSObject {
         }
         #endif
     }
-
-    deinit {
+    
+    public func deinitilze() {
         #if !os(macOS)
         try? AVAudioSession.sharedInstance().setPreferredOutputNumberOfChannels(2)
         #endif
         NotificationCenter.default.removeObserver(self)
+        videoOutput?.displayLayerDelegate = nil
         videoOutput?.invalidate()
         playerItem.shutdown()
+        self._pipController = nil
+    }
+
+    deinit {
+        deinitilze()
     }
 }
 
@@ -469,7 +475,7 @@ extension KSMEPlayer: MediaPlayerProtocol {
             audioOutput.flush()
         }
     }
-}
+} 
 
 @available(tvOS 14.0, *)
 extension KSMEPlayer: AVPictureInPictureSampleBufferPlaybackDelegate {
