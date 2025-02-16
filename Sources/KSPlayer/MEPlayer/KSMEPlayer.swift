@@ -38,6 +38,7 @@ public class KSMEPlayer: NSObject {
     }
 
     private lazy var _pipController: Any? = {
+        guard options.canStartPictureInPictureAutomaticallyFromInline else {return nil}
         if #available(iOS 15.0, tvOS 15.0, macOS 12.0, *), let videoOutput {
             let contentSource = AVPictureInPictureController.ContentSource(sampleBufferDisplayLayer: videoOutput.displayLayer, playbackDelegate: self)
             let pip = KSPictureInPictureController(contentSource: contentSource)
@@ -574,6 +575,7 @@ extension KSMEPlayer: AVPlaybackCoordinatorPlaybackControlDelegate {
 
 extension KSMEPlayer: DisplayLayerDelegate {
     public func change(displayLayer: AVSampleBufferDisplayLayer) {
+        guard KSOptions.canStartPictureInPictureAutomaticallyFromInline else {return}
         if #available(iOS 15.0, tvOS 15.0, macOS 12.0, *) {
             let contentSource = AVPictureInPictureController.ContentSource(sampleBufferDisplayLayer: displayLayer, playbackDelegate: self)
             _pipController = KSPictureInPictureController(contentSource: contentSource)
